@@ -41,7 +41,7 @@ export default function Ingresar() {
                 secureTextEntry
             />
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/recuperarContra')}>
                 <Text style={styles.linkText}>¿Olvidó su contraseña?</Text>
             </TouchableOpacity>
 
@@ -51,10 +51,10 @@ export default function Ingresar() {
 
             <Text style={styles.text}>¿No tiene una cuenta?</Text>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/registro')}>
                 <Text style={styles.linkText}>Registrarse</Text>
-
             </TouchableOpacity>
+
 
             <View style={styles.logoContainer}>
                 <Image
