@@ -13,6 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
+        "package": "com.inmovilSmart.app",
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d4b947ed-556e-4ce3-bd25-c2d0c8e15cf9"
+      }
     }
   }
 }
