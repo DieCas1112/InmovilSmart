@@ -1,68 +1,35 @@
-
+import React, { useState } from 'react';
+import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import React, { useState } from 'react';
-import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import logo from '../assets/images/logo.png'; // ← corrected
-import { db } from '../firebaseconfig';
+import { app } from '../firebaseconfig';
+import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 
-/** Reusable button with hover (web) & activeOpacity (mobile) */
-export function MiBoton({ onPress, children, loading }) {
-  const [hover, setHover] = useState(false);
 
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={loading}
-      activeOpacity={0.85}
-      onMouseEnter={() => Platform.OS === 'web' && setHover(true)}
-      onMouseLeave={() => Platform.OS === 'web' && setHover(false)}
-      style={[
-        styles.button,
-        hover && Platform.OS === 'web' && styles.buttonHover,
-        loading && styles.buttonDisabled,
-      ]}
-    >
-      {loading ? (
-        <ActivityIndicator color={hover ? '#fff' : '#141414'} />
-      ) : (
-        <Text style={[styles.buttonText, hover && Platform.OS === 'web' && styles.buttonTextHover]}>
-          {children}
-        </Text>
-      )}
-    </TouchableOpacity>
-  );
-}
 
-/** Main screen: publicar propiedad */
-export default function PublicarPropiedad({ navigation }) {
+//const navigation = useNavigation();
+//navigation.navigate('inicio');
+
+export default function PublicarPropiedad({ }) {
   const [titulo, setTitulo] = useState('');
   const [precio, setPrecio] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [moneda, setMoneda] = useState('CRC');
   const [fotos, setFotos] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [subiendo, setSubiendo] = useState(false);
+
+  const storage = getStorage(app);
+  const db = getFirestore(app);
 
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
-      aspect: [4, 3],
-      quality: 1,
+      quality: 0.7,
     });
     if (!result.canceled) {
       setFotos([...fotos, ...result.assets.map(a => a.uri)]);
@@ -75,49 +42,52 @@ export default function PublicarPropiedad({ navigation }) {
       { text: 'Eliminar', style: 'destructive', onPress: () => setFotos(fotos.filter((_, i) => i !== index)) },
     ]);
   };
-
+/*
   async function uploadImageAsync(uri, path) {
     const resp = await fetch(uri);
     const blob = await resp.blob();
-    const storage = getStorage();
     const storageRef = ref(storage, path);
     await uploadBytes(storageRef, blob);
     return await getDownloadURL(storageRef);
   }
-
-  const guardarPropiedad = async () => {
+*/
+  const handleGuardarPropiedad = async () => {
     if (!titulo || !precio || !descripcion || fotos.length === 0) {
-      Alert.alert('Error', 'Completa todos los campos y sube al menos una foto.');
+      alert('Completa todos los campos y sube al menos una foto.');
       return;
     }
-    setLoading(true);
+    setSubiendo(true);
     try {
-      const urls = [];
-      for (let uri of fotos) {
-        const filename = uri.split('/').pop();
-        const url = await uploadImageAsync(uri, `propiedades/${filename}_${Date.now()}`);
-        urls.push(url);
+      let urlsFotos = [];
+      for (let i = 0; i < fotos.length; i++) {
+        if (!fotos[i]) throw new Error('URI de foto inválida');
+        const response = await fetch(fotos[i]);
+        const blob = await response.blob();
+        const filename = `propiedad_${Date.now()}_${i}.jpg`;
+        const storageRef = ref(storage, `propiedad/${filename}`);
+        await uploadBytes(storageRef, blob);
+        const url = await getDownloadURL(storageRef);
+        urlsFotos.push(url);
       }
-      await addDoc(collection(db, 'Propiedades'), {
+      await addDoc(collection(db, 'propiedad'), {
         titulo,
-        precio,
         moneda,
+        precio,
         descripcion,
-        fotos: urls,
-        fecha: new Date(),
+        fotos: urlsFotos,
+        fecha: new Date()
       });
+      alert('Propiedad guardada con éxito');
       setTitulo('');
+      setMoneda('CRC');
       setPrecio('');
       setDescripcion('');
-      setMoneda('CRC');
       setFotos([]);
-      Alert.alert('Éxito', '¡Propiedad publicada con éxito!');
-    } catch (e) {
-      console.error(e);
-      Alert.alert('Error', 'Error al guardar la propiedad');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Error al guardar propiedad:', error);
+      alert('Error al guardar propiedad: ' + (error));
     }
+    setSubiendo(false);
   };
 
   return (
@@ -125,7 +95,7 @@ export default function PublicarPropiedad({ navigation }) {
       <ScrollView contentContainerStyle={styles.formContainer} keyboardShouldPersistTaps="handled">
         {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="#141414" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Publicar propiedad</Text>
@@ -134,7 +104,7 @@ export default function PublicarPropiedad({ navigation }) {
 
         {/* Logo */}
         <View style={styles.logoWrapper}>
-          <Image source={logo} style={styles.headerImage} resizeMode="contain" />
+          <Image source={require('../assets/images/logo.png')} style={styles.headerImage} resizeMode="contain" />
         </View>
 
         {/* Form fields */}
@@ -171,9 +141,11 @@ export default function PublicarPropiedad({ navigation }) {
           multiline
         />
 
-        <MiBoton onPress={pickImage} loading={false}>
-          Subir fotos
-        </MiBoton>
+        {/* Botón para subir fotos */}
+        <TouchableOpacity style={styles.button} onPress={pickImage} disabled={subiendo}>
+          <Text style={styles.buttonText}>Subir fotos</Text>
+        </TouchableOpacity>
+
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photosScroll}>
           {fotos.map((uri, i) => (
@@ -184,18 +156,34 @@ export default function PublicarPropiedad({ navigation }) {
         </ScrollView>
         <Text style={styles.helpText}>* Toca una foto para eliminarla</Text>
 
-        <MiBoton onPress={guardarPropiedad} loading={loading}>
-          Guardar propiedad
-        </MiBoton>
+
+        <TouchableOpacity style={styles.button} onPress={handleGuardarPropiedad} disabled={subiendo}>
+          {subiendo
+            ? <ActivityIndicator color="#fff" />
+            : <Text style={styles.buttonText}>Guardar propiedad</Text>
+          }
+        </TouchableOpacity>
       </ScrollView>
 
-      {/* Tab bar */}
+
       <View style={styles.tabBar}>
-        <Ionicons name="home" size={24} color="#141414" />
-        <Ionicons name="search" size={24} color="#B3B3B3" />
-        <Ionicons name="add-circle-outline" size={24} color="#B3B3B3" />
-        <Ionicons name="notifications-outline" size={24} color="#B3B3B3" />
-        <Ionicons name="person-outline" size={24} color="#B3B3B3" />
+        <TouchableOpacity onPress={() => router.replace('/inicio')}>
+          <Ionicons name="home" size={24} color="#141414" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/buscar')}>
+          <Ionicons name="search" size={24} color="#B3B3B3" />
+        </TouchableOpacity>
+{/*
+        <TouchableOpacity onPress={() => router.push('Add')}>
+          <Ionicons name="add-circle-outline" size={24} color="#B3B3B3" />
+        </TouchableOpacity>
+*/}
+        <TouchableOpacity onPress={() => router.push('/notificaciones')}>
+          <Ionicons name="notifications-outline" size={24} color="#B3B3B3" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/perfil')}>
+          <Ionicons name="person-outline" size={24} color="#B3B3B3" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -215,9 +203,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  headerTitle: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: 'bold', color: '#141414' },
+  headerTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#141414'
+  },
   logoWrapper: { alignItems: 'center', marginBottom: 16 },
-  headerImage: { width: 80, height: 80, borderRadius: 24, borderWidth: 2.5, borderColor: '#e0e0e0' },
+  headerImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 24,
+    borderWidth: 2.5,
+    borderColor: '#e0e0e0'
+  },
   input: {
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
@@ -226,33 +226,50 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     color: '#141414',
   },
-  pickerWrapper: { marginBottom: 14, borderRadius: 12, backgroundColor: '#F5F5F5', overflow: 'hidden' },
-  picker: { height: 48 },
-  pickerItem: { fontSize: 15 },
-  button: {
+  pickerWrapper: {
+    marginBottom: 14,
+    borderRadius: 12,
     backgroundColor: '#F5F5F5',
+    overflow: 'hidden',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  picker: {
+    height: 60,
+    width: '100%',
+    fontSize: 14,
+    color: '#141414',
+  },
+  pickerItem: {
+    fontSize: 14,
+    height: 48,
+    color: '#141414',
+    paddingHorizontal: 6,
+    width: '100%',
+  },
+  button: {
+    backgroundColor: '#000',
     borderRadius: 20,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 6,
     marginBottom: 10,
-    transitionProperty: 'background-color',
-    transitionDuration: '180ms',
-    transitionTimingFunction: 'ease-in-out',
   },
-  buttonHover: { backgroundColor: '#000' },
-  buttonDisabled: { backgroundColor: '#AAA' },
   buttonText: {
-    color: '#141414',
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 15,
-    transitionProperty: 'color',
-    transitionDuration: '180ms',
-    transitionTimingFunction: 'ease-in-out',
   },
-  buttonTextHover: { color: '#fff' },
   photosScroll: { marginVertical: 10 },
-  photoThumb: { width: 70, height: 70, borderRadius: 10, marginRight: 10, backgroundColor: '#eee', borderWidth: 2, borderColor: '#ccc' },
+  photoThumb: {
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    marginRight: 10,
+    backgroundColor: '#eee',
+    borderWidth: 2,
+    borderColor: '#ccc'
+  },
   helpText: { color: '#888', fontSize: 13, marginBottom: 10 },
   tabBar: {
     flexDirection: 'row',

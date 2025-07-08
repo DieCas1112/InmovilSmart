@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -38,7 +39,7 @@ export default function CodigoContra() {
   // Función de verificación (placeholder)
   const onVerify = () => {
     // Aquí puedes poner la lógica de validación y navegación
-    navigation.navigate('/nuevaContra'); // Cambia al nombre de tu ruta real
+    router.push('/nuevaContra'); // Cambia al nombre de tu ruta real
   };
 
   // Función para reenviar código

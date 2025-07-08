@@ -25,7 +25,8 @@ export default function Registrar() {
             await setDoc(doc(db, 'Usuarios', userCredential.user.uid), {
                 nombre,
                 email,
-                creado: new Date()
+                creado: new Date(),
+                password
             });
             alert('¡Registro exitoso!');
             router.replace('/');

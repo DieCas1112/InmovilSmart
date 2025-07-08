@@ -1,21 +1,24 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-// Tu configuración de Firebase
+
+
 const firebaseConfig = {
     apiKey: "AIzaSyAPtuiOntZO-Vq75HlyzabvVs5iJxs8bKk",
     authDomain: "inmovilsmart.firebaseapp.com",
     projectId: "inmovilsmart",
-    storageBucket: "inmovilsmart.appspot.com",
+    storageBucket: "gs://inmovilsmart.firebasestorage.app",
     messagingSenderId: "154350768467",
     appId: "1:154350768467:web:93aff4bd0490b518a191a6"
 };
 
-// Inicializa Firebase
+
 const app = initializeApp(firebaseConfig);
 
+// Inicializa Auth con persistencia en móvil y normal en web
 let auth;
 if (Platform.OS === 'web') {
     auth = getAuth(app);
@@ -25,8 +28,12 @@ if (Platform.OS === 'web') {
     });
 }
 
-// Inicializa Firestore (si lo necesitas)
+// Instancias de servicios
 const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Exporta lo necesario
+export { app, auth, db, storage };
 
 //import {  getAuth, signInWithPopup, GoogleAuthProvider }  from "firebase/auth";
 
@@ -35,8 +42,3 @@ const db = getFirestore(app);
 //const auth = getAuth();
 
 
-
-
-
-
-export { auth, app, db };
