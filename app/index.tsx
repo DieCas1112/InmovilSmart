@@ -1,13 +1,14 @@
 //import appFirebase, { Google } from "../firebaseconfig";
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { auth, db ,app} from '../firebaseconfig';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-import { useRouter } from 'expo-router';
 import * as Google from 'expo-auth-session/providers/google';
+import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
+import { Auth, GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
 //import appFirebase, {Google} from "../firebaseconfig";
 
+let auth: Auth;
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -47,9 +48,16 @@ export default function Ingresar() {
     };
 
     return (
+    
+
         <View style={styles.container}>
             <Text style={styles.title}>Iniciar sesión</Text>
-
+            <View style={styles.logoContainer}>
+        <Image
+source={require('../assets/images/logoInvertido.png')}
+resizeMode="contain"  
+style={{ width: 75, height: 75, marginRight: 15 }}
+/>
             <TextInput
                 style={styles.input}
                 placeholder="Correo electrónico"
@@ -84,9 +92,12 @@ export default function Ingresar() {
                 style={styles.googleButton}
             >
                 <Image
-                    source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png' }}
-                    style={{ width: 20, height: 20, marginRight: 10 }}
-                />
+  source={require('../assets/images/google.png')}
+  resizeMode="contain"  // ✅ usar como prop
+  style={{ width: 45, height: 40, marginRight: 10 }}
+/>
+
+
                 <Text style={styles.googleButtonText}>Continuar con Google</Text>
             </TouchableOpacity>
 
@@ -95,11 +106,7 @@ export default function Ingresar() {
                 <Text style={styles.linkText}>Registrarse</Text>
             </TouchableOpacity>
 
-            <View style={styles.logoContainer}>
-                <Image
-                    source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png" }}
-                    style={{ width: 200, height: 80, resizeMode: 'contain' }}
-                />
+           
             </View>
         </View>
     );
@@ -116,14 +123,40 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     button: {
-        backgroundColor: '#000',
-        borderRadius: 24,
+        backgroundColor: '#F5F5F5',
+        borderRadius: 20,
         paddingVertical: 14,
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: 6,
         marginBottom: 10,
-    },
-    buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+        transitionProperty: 'background-color',
+        transitionDuration: '180ms',
+        transitionTimingFunction: 'ease-in-out',
+      },
+      buttonHover: { backgroundColor: '#000' },
+      buttonDisabled: { backgroundColor: '#AAA' },
+      buttonText: {
+        color: '#141414',
+        fontWeight: 'bold',
+        fontSize: 15,
+        transitionProperty: 'color',
+        transitionDuration: '180ms',
+        transitionTimingFunction: 'ease-in-out',
+      },
+      buttonTextHover: { color: '#fff' },
+      photosScroll: { marginVertical: 10 },
+      photoThumb: { width: 70, height: 70, borderRadius: 10, marginRight: 10, backgroundColor: '#eee', borderWidth: 2, borderColor: '#ccc' },
+      helpText: { color: '#888', fontSize: 13, marginBottom: 10 },
+      tabBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        height: 54,
+        borderTopColor: '#E5E5E5',
+        borderTopWidth: 1,
+      },
+      
+    buttonText: { color: '#000', fontWeight: 'bold', fontSize: 16 },
     linkText: { color: '#888', textAlign: 'center', marginVertical: 6 },
     text: { color: '#888', textAlign: 'center', marginTop: 10 },
     logoContainer: { flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16 },

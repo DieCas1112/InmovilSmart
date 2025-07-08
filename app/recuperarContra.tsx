@@ -2,13 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
+    Platform,
     SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
-    Platform
+    View
 } from 'react-native';
 
 export default function RecuperarContra() {
@@ -17,16 +17,16 @@ export default function RecuperarContra() {
 
     const enviarCodigo = () => {
         if (correoTel.trim() === '') {
-            alert('Por favor ingresa tu correo electrónico o teléfono.');
+            alert('Por favor ingresa tu correo electrónico .');
             return;
         }
         // Aquí iría la lógica para enviar el código con Firebase.
-        router.push('/');
+        router.push('/codigoContra');
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Encabezado */}
+            /* Encabezado */
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.back()} style={{ padding: 4 }}>
                     <Ionicons name="arrow-back" size={24} color="#141414" />
@@ -128,4 +128,3 @@ const styles = StyleSheet.create({
         letterSpacing: 0.2,
     },
 });
-
