@@ -9,11 +9,6 @@ import { app } from '../firebaseconfig';
 import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
 
-
-
-//const navigation = useNavigation();
-//navigation.navigate('inicio');
-
 export default function PublicarPropiedad({ }) {
   const [titulo, setTitulo] = useState('');
   const [precio, setPrecio] = useState('');
@@ -42,15 +37,7 @@ export default function PublicarPropiedad({ }) {
       { text: 'Eliminar', style: 'destructive', onPress: () => setFotos(fotos.filter((_, i) => i !== index)) },
     ]);
   };
-/*
-  async function uploadImageAsync(uri, path) {
-    const resp = await fetch(uri);
-    const blob = await resp.blob();
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, blob);
-    return await getDownloadURL(storageRef);
-  }
-*/
+
   const handleGuardarPropiedad = async () => {
     if (!titulo || !precio || !descripcion || fotos.length === 0) {
       alert('Completa todos los campos y sube al menos una foto.');
@@ -173,11 +160,11 @@ export default function PublicarPropiedad({ }) {
         <TouchableOpacity onPress={() => router.push('/buscar')}>
           <Ionicons name="search" size={24} color="#B3B3B3" />
         </TouchableOpacity>
-{/*
-        <TouchableOpacity onPress={() => router.push('Add')}>
+
+        <TouchableOpacity onPress={() => router.push('/detallePropiedad')}>
           <Ionicons name="add-circle-outline" size={24} color="#B3B3B3" />
         </TouchableOpacity>
-*/}
+
         <TouchableOpacity onPress={() => router.push('/notificaciones')}>
           <Ionicons name="notifications-outline" size={24} color="#B3B3B3" />
         </TouchableOpacity>

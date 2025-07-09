@@ -8,7 +8,7 @@ export default function NuevaContra() {
   const [nueva, setNueva] = useState('');
   const [confirmar, setConfirmar] = useState('');
 
-  // Aquí puedes agregar la lógica para enviar la nueva contraseña a tu backend/Firebase
+
 
   return (
     <View style={styles.container}>
@@ -22,7 +22,7 @@ export default function NuevaContra() {
         </Text>
       </View>
 
-      {/* Input Nueva contraseña */}
+
       <View style={styles.inputBlock}>
         <Text style={styles.label}>Nueva contraseña</Text>
         <TextInput
@@ -35,7 +35,7 @@ export default function NuevaContra() {
         />
       </View>
 
-      {/* Input Confirmar nueva contraseña */}
+
       <View style={styles.inputBlock}>
         <Text style={styles.label}>Confirmar nueva contraseña</Text>
         <TextInput
@@ -116,6 +116,3 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2
   }
 });
- /*** En este caso en l apantalla anterior no se puedo configurara lo fire base para lo del codigo pero . aka lo que podemosohacer es modificar el cual me permita con el correo modifca la contre
-  * -sena y modifacr la exixtente
-  */

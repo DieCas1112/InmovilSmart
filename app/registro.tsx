@@ -21,7 +21,7 @@ export default function Registrar() {
         }
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            // Guardar en Firestore
+            
             await setDoc(doc(db, 'Usuarios', userCredential.user.uid), {
                 nombre,
                 email,
@@ -31,7 +31,7 @@ export default function Registrar() {
             alert('¡Registro exitoso!');
             router.replace('/');
         } catch (error) {
-            // Manejo de error como ya vimos
+            
         }
     };
 

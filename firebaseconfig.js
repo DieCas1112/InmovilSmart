@@ -18,7 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Inicializa Auth con persistencia en móvil y normal en web
+
 let auth;
 if (Platform.OS === 'web') {
     auth = getAuth(app);
@@ -28,17 +28,10 @@ if (Platform.OS === 'web') {
     });
 }
 
-// Instancias de servicios
+
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Exporta lo necesario
 export { app, auth, db, storage };
-
-//import {  getAuth, signInWithPopup, GoogleAuthProvider }  from "firebase/auth";
-
-
-//const provider = new GoogleAuthProvider();
-//const auth = getAuth();
 
 

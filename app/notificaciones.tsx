@@ -2,16 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// Puedes conectar aquí con Firestore para cargar notificaciones reales
-// import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
-// const db = getFirestore();
+
 
 const mockNotificaciones = [
     {
         id: '1',
         titulo: 'Alerta de búsqueda',
         detalle: 'Nueva propiedad disponible en Cartago',
-        // ...puedes agregar más campos si luego ocupas
+
     },
     {
         id: '2',
@@ -31,20 +29,18 @@ const mockNotificaciones = [
 ];
 
 export default function Alertas() {
-    // Cuando conectes a Firestore cambia mockNotificaciones por el resultado del query
+
     const [notificaciones, setNotificaciones] = useState(mockNotificaciones);
 
-    // Si necesitas cargar desde Firestore:
-    /*
     useEffect(() => {
-      async function cargarNotificaciones() {
-        const q = query(collection(db, 'notificaciones'), where('uid', '==', 'usuarioUID'));
-        const snap = await getDocs(q);
-        setNotificaciones(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-      }
-      cargarNotificaciones();
+        async function cargarNotificaciones() {
+            const q = query(collection(db, 'notificaciones'), where('uid', '==', 'usuarioUID'));
+            const snap = await getDocs(q);
+            setNotificaciones(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        }
+        cargarNotificaciones();
     }, []);
-    */
+
 
     return (
         <View style={styles.container}>

@@ -3,15 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView 
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
-// Asume que tu Firebase está ya inicializado en otro archivo (ej: firebaseconfig.js)
-// Si no, inicialízalo aquí o importa tus instancias (auth, db)
-
 export default function Perfil() {
     const [usuario, setUsuario] = useState({ nombre: '', email: '' });
     const [publicaciones, setPublicaciones] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Inicializa Firebase Auth y Firestore
     const auth = getAuth();
     const db = getFirestore();
 

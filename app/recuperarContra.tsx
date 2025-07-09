@@ -20,7 +20,7 @@ export default function RecuperarContra() {
             alert('Por favor ingresa tu correo electrónico .');
             return;
         }
-        // Aquí iría la lógica para enviar el código con Firebase.
+        
         router.push('/codigoContra');
     };
 
@@ -39,11 +39,11 @@ export default function RecuperarContra() {
             <View style={styles.body}>
                 <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
                 <Text style={styles.paragraph}>
-                    Ingresa tu correo electrónico o número de teléfono para recibir un código de recuperación.
+                    Ingresa tu correo electrónico para recibir un código de recuperación.
                 </Text>
 
                 <TextInput
-                    placeholder="Correo electrónico o teléfono"
+                    placeholder="Correo electrónico"
                     placeholderTextColor="#888"
                     style={styles.input}
                     value={correoTel}

@@ -10,42 +10,43 @@ export default function CodigoContra() {
   const [timer, setTimer] = useState(59);
   const inputRefs = Array(6).fill(null).map(() => useRef(null));
 
-  // Simple timer logic (sin intervalos reales para simplificar)
+
   React.useEffect(() => {
     if (timer > 0) {
       const timeout = setTimeout(() => setTimer(timer - 1), 1000);
       return () => clearTimeout(timeout);
     }
   }, [timer]);
-
-  // Maneja el ingreso de cada dígito
-  const handleChange = (text, idx) => {
-    if (!/^\d*$/.test(text)) return;
-    const newCode = [...code];
-    newCode[idx] = text.slice(-1);
-    setCode(newCode);
-    if (text && idx < 5) {
-      inputRefs[idx + 1].current.focus();
-    }
-  };
-
-  // Maneja retroceso para inputs individuales
-  const handleKeyPress = (e, idx) => {
-    if (e.nativeEvent.key === 'Backspace' && code[idx] === '' && idx > 0) {
-      inputRefs[idx - 1].current.focus();
-    }
-  };
-
+  
+    // Maneja el ingreso de cada dígito
+    const handleChange = (text, idx) => {
+      if (!/^\d*$/.test(text)) return;
+      const newCode = [...code];
+      newCode[idx] = text.slice(-1);
+      setCode(newCode);
+      if (text && idx < 5) {
+        inputRefs[idx + 1].current.focus();
+      }
+    };
+  
+  
+  
+    const handleKeyPress = (e, idx) => {
+      if (e.nativeEvent.key === 'Backspace' && code[idx] === '' && idx > 0) {
+        inputRefs[idx - 1].current.focus();
+      }
+    };
+  
   // Función de verificación (placeholder)
   const onVerify = () => {
-    // Aquí puedes poner la lógica de validación y navegación
-    router.push('/nuevaContra'); // Cambia al nombre de tu ruta real
+    
+    router.push('/nuevaContra'); 
   };
 
   // Función para reenviar código
   const resendCode = () => {
     setTimer(59);
-    // Lógica de reenvío aquí
+    
   };
 
   return (
@@ -66,7 +67,7 @@ export default function CodigoContra() {
         Hemos enviado un código de 6 dígitos a tu correo electrónico. Por favor, ingrésalo a continuación.
       </Text>
 
-      {/* Inputs del código */}
+      {/* Inputs  */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 18 }}>
         {code.map((digit, idx) => (
           <TextInput
@@ -86,7 +87,7 @@ export default function CodigoContra() {
         ))}
       </View>
 
-      {/* Timer */}
+      {/* timer para introducir el codigo deverificacion */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 24 }}>
         <View style={styles.timerBox}>
           <Text style={styles.timerText}>{String(Math.floor(timer / 60)).padStart(2, '0')}</Text>

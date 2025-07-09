@@ -1,10 +1,7 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseconfig'; // Ajusta el path
+import { db } from '../firebaseconfig'; 
 
 export default function BuscarPropiedades() {
     const [propiedades, setPropiedades] = useState([]);
